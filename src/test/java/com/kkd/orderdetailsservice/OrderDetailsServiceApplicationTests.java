@@ -4,12 +4,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,16 +27,20 @@ import java.util.List;
 import com.kkd.orderdetailsservice.modal.AddressDetails;
 import com.kkd.orderdetailsservice.modal.OrderDetails;
 import com.kkd.orderdetailsservice.repository.OrderDetailsRepository;
+import com.kkd.orderdetailsservice.service.OrderDetailsService;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
 public class OrderDetailsServiceApplicationTests {
 
 	@Autowired
-	MockMvc mockmvc;
+	MockMvc mockMvc;
 
 	@MockBean
 	OrderDetailsRepository orderDetailsRepository;
+	
+	@MockBean
+	OrderDetailsService orderDetailsService;
 
 	List<OrderDetails> orderDetails=new ArrayList<OrderDetails>();
 	OrderDetails mockOrderDetails;
@@ -108,12 +118,18 @@ public class OrderDetailsServiceApplicationTests {
 			    + " \"validityOfOrder\": \"2018-04-05T10:10:30\","
 			    + "  \"orderDeclineReason\": \"none\""
 			    + "  }\"]";
+		System.out.println(expected);
 		
 		
 	}
  
 	@Test
 	public void getAllOrderDetailsTest() throws Exception {
+		Mockito.when(orderDetailsRepository.findAll()).thenReturn(orderDetails);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/order/list")
+		        .accept(MediaType.APPLICATION_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		assertEquals(expectedArray, result.getResponse().getContentAsString());
 
 	}
 

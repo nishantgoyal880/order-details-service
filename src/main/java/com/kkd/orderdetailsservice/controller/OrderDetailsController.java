@@ -2,8 +2,6 @@ package com.kkd.orderdetailsservice.controller;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kkd.orderdetailsservice.OrderDetailsServiceApplication;
 import com.kkd.orderdetailsservice.modal.OrderDetails;
 import com.kkd.orderdetailsservice.repository.OrderDetailsRepository;
 import com.kkd.orderdetailsservice.service.OrderDetailsService;
@@ -24,7 +21,6 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 @RequestMapping("/order")
 public class OrderDetailsController {
 
-	private static final Logger log = LoggerFactory.getLogger(OrderDetailsServiceApplication.class);
 	
 	@Autowired
 	private OrderDetailsRepository orderDetailsRepository;
@@ -80,8 +76,11 @@ public class OrderDetailsController {
 	@PutMapping("/update")
 	@HystrixCommand(fallbackMethod = "updateOrdersByFarmerIdFallback")
 	public String updateOrdersByFarmerId(@RequestBody OrderDetails orderDetails) {
-		orderDetailsService.produceMsg("updating the details in the database");
-		return orderDetailsService.updatingTheOrder(orderDetails);
+		OrderDetails detailsToUpdate=orderDetailsRepository.findByorderId(orderDetails.getOrderId());
+		OrderDetails updatedValues =orderDetailsService.updatingTheOrder(orderDetails,detailsToUpdate);
+		orderDetailsRepository.save(updatedValues);
+		//orderDetailsService.produceMsg("updating the details in the database");
+		return "order updated successfully";
 	}
 
 	// Fallback method for the above mapping

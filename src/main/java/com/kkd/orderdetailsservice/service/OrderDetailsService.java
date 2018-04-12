@@ -6,20 +6,15 @@ import org.springframework.stereotype.Service;
 
 import com.kkd.orderdetailsservice.OrderDetailsServiceApplication;
 import com.kkd.orderdetailsservice.modal.OrderDetails;
-import com.kkd.orderdetailsservice.repository.OrderDetailsRepository;
 
 @Service
 public class OrderDetailsService {
-	
-	@Autowired
-	private OrderDetailsRepository orderDetailsRepository;
-	
+		
 	@Autowired
 	private AmqpTemplate amqpTemplate;
 	
 	//Service code for updating the order details in database
-	public String updatingTheOrder(OrderDetails orderDetails) {
-		OrderDetails detailsToUpdate=orderDetailsRepository.findByorderId(orderDetails.getOrderId());
+	public OrderDetails updatingTheOrder(OrderDetails orderDetails,OrderDetails detailsToUpdate) {
 		
 		if(orderDetails.getAvgRating()!=null){
 			detailsToUpdate.setAvgRating(orderDetails.getAvgRating());
@@ -51,8 +46,7 @@ public class OrderDetailsService {
 		}else {
 			
 		}
-		orderDetailsRepository.save(detailsToUpdate);
-		return "OrderUpdatedSuccessfully";
+		return detailsToUpdate;
 	}
 	
 	
