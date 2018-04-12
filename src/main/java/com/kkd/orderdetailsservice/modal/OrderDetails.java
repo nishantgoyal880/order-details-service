@@ -1,4 +1,4 @@
-package com.kkd.orderdetailsservice;
+package com.kkd.orderdetailsservice.modal;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,13 +10,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection="orderDetails")
 public class OrderDetails {
 	
-	@Id
+	
 	private String kkdFarmId;
 	private String productId;
 	private String kkdCustId;
 	private String name;
 	private AddressDetails address;
 	private Integer avgRating;
+	@Id
 	private String orderId;
 	private Integer quantity;
 	private String farmerStatus;

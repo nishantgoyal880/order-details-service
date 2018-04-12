@@ -1,4 +1,4 @@
-package com.kkd.orderdetailsservice;
+package com.kkd.orderdetailsservice.modal;
 
 import org.springframework.stereotype.Component;
 
